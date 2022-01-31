@@ -1,0 +1,9 @@
+services:
+    mii-aktin-report-client:
+        build: .
+        environment:
+            - BROKER_ENDPOINT_URI=${MII_REPORT_BROKER_ENDPOINT_URI}
+            - CLIENT_AUTH_PARAM=${MII_REPORT_CLIENT_AUTH_PARAM}
+        volumes:
+            - ./reports:/opt/reportclient/reports
+        #entrypoint: bash -c "tail -f /dev/null"

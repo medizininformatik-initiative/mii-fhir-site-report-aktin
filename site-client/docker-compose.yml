@@ -1,0 +1,9 @@
+services:
+    mii-aktin-report-client:
+        build: .
+        environment:
+            - FHIR_BASE_URL=${MII_REPORT_CLIENT_FHIR_BASE_URL}
+            - BROKER_ENDPOINT_URI=${MII_REPORT_BROKER_ENDPOINT_URI}
+            - CLIENT_AUTH_PARAM=${MII_REPORT_CLIENT_AUTH_PARAM}
+        volumes:
+            - ./report-queries.json:/opt/reportclient/report-queries.json

@@ -1,0 +1,1 @@
+This folder is needed to save the reports which are downloaded from each site
