@@ -15,8 +15,20 @@
       "query": "/MedicationAdministration?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration&_summary=count"
     },
     {
+      "name": "sum-medication-mii",
+      "query": "/MedicationAdministration?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication&_summary=count"
+    },
+    {
       "name": "sum-patient-mii",
       "query": "/Patient?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient&_summary=count"
+    },
+    {
+      "name": "sum-researchsubject-mii",
+      "query": "/Patient?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject&_summary=count"
+    },
+    {
+      "name": "sum-vitalstatus-mii",
+      "query": "/Patient?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus&_summary=count"
     },
     {
       "name": "sum-encounter-einrichtung-mii",
@@ -41,6 +53,10 @@
     {
       "name": "sum-observation-mii",
       "query": "/Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab&_summary=count"
+    },
+    {
+      "name": "sum-servicerequest-mii",
+      "query": "/Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab&_summary=count"
     },
     {
       "name": "sum-consent-all",
@@ -77,6 +93,18 @@
     {
       "name": "sum-observation-all",
       "query": "/Observation?_summary=count"
+    },
+    {
+      "name": "sum-servicerequest-all",
+      "query": "/ServiceRequest?_summary=count"
+    },
+    {
+      "name": "sum-medication-all",
+      "query": "/Medication?_summary=count"
+    },
+    {
+      "name": "sum-researchsubject-all",
+      "query": "/ResearchSubject?_summary=count"
     }
   ]
 }
