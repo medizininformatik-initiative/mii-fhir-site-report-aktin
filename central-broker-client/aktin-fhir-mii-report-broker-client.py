@@ -35,10 +35,12 @@ for node in nodes:
     aktin_broker_node_report_url = f'{aktin_broker_base_url}{node["node_id"]}/miireport'
 
     headers = {'Authorization': f"Bearer {aktin_broker_api_key}"}
-    resp = requests.get(aktin_broker_node_report_url, headers=headers).json()
+    resp = requests.get(aktin_broker_node_report_url, headers=headers)
 
-    report = json.loads(resp)
-    report['site-name'] = node_name
+    if resp.status_code == 200:
+        report_json = resp.json()
+        report = json.loads(report_json)
+        report['site-name'] = node_name
 
-    with open(out_file_name, 'w', encoding='utf-8') as out_file:
-        out_file.write(json.dumps(report))
+        with open(out_file_name, 'w', encoding='utf-8') as out_file:
+            out_file.write(json.dumps(report))

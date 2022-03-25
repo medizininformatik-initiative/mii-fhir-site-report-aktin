@@ -1,2 +1,2 @@
-reports/*
+central-broker-client/reports/*
 !reports/README.md
