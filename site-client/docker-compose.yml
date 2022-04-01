@@ -5,5 +5,8 @@ services:
             - FHIR_BASE_URL=${MII_REPORT_CLIENT_FHIR_BASE_URL}
             - BROKER_ENDPOINT_URI=${MII_REPORT_BROKER_ENDPOINT_URI}
             - CLIENT_AUTH_PARAM=${MII_REPORT_CLIENT_AUTH_PARAM}
+            #- FHIR_USERNAME=${MII_REPORT_CLIENT_FHIR_USERNAME}
+            #- FHIR_PASSWORD=${MII_REPORT_CLIENT_FHIR_PASSWORD}
+            #- FHIR_NOVERIFY=${MII_REPORT_CLIENT_FHIR_NOVERIFY:False}
         volumes:
             - ./report-queries.json:/opt/reportclient/report-queries.json
