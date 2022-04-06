@@ -1,5 +1,5 @@
 services:
-    mii-aktin-report-client:
+    mii-aktin-central-report-client:
         build: .
         environment:
             - BROKER_ENDPOINT_URI=${MII_REPORT_BROKER_ENDPOINT_URI}
