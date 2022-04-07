@@ -45,56 +45,56 @@ proxy_aktin = {
 aktin_broker_node_url = f'{aktin_broker_url}my/node/miireport'
 
 
-def execute_status_queries(queries):
-
-    for query in queries:
-        start = time.time()
-        if fhir_token is not None:
-            resp = requests.get(f'{fhir_base_url}{query["query"]}', headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'},
-                                proxies=proxies_fhir)
-        else:
-            resp = requests.get(f'{fhir_base_url}{query["query"]}', headers={"Prefer": 'handling=strict'}, auth=HTTPBasicAuth(
-                fhir_user, fhir_pw), proxies=proxies_fhir)
-
-        query['status'] = "success"
-
-        if resp.status_code != 200:
-            query['status'] = "failed"
-
-        try:
-            resp = resp.json()
-        except JSONDecodeError:
-            query['status'] = "failed"
-
-        if query['status'] != "failed":
-            query['response'] = resp['total']
-
-        end = time.time()
-        query['timeSeconds'] = end - start
-
-def execute_capability_statement(capabilityStatement):
+def execute_query(query):
+    start = time.time()
     if fhir_token is not None:
-        resp = requests.get(f'{fhir_base_url}/metadata', headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'})
+        resp = requests.get(f'{fhir_base_url}{query}', headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'},
+                            proxies=proxies_fhir)
     else:
-        resp = requests.get(f'{fhir_base_url}/metadata', headers={"Prefer": 'handling=strict'}, auth=HTTPBasicAuth(
-            fhir_user, fhir_pw))
+        resp = requests.get(f'{fhir_base_url}{query}', headers={"Prefer": 'handling=strict'}, auth=HTTPBasicAuth(
+            fhir_user, fhir_pw), proxies=proxies_fhir)
+
+    resp_object = {}
+
+    resp_object['status'] = "success"
 
     if resp.status_code != 200:
-        capabilityStatement['status'] = "failed"
+        resp_object['status'] = "failed"
 
     try:
-        resp = resp.json()
+        resp_object['json'] = resp.json()
     except JSONDecodeError:
-        capabilityStatement['status'] = "failed"
-        return
+        resp_object['status'] = "failed"
 
-    capabilityStatement['software']['name'] = resp['software']['name']
-    capabilityStatement['software']['version'] = resp['software']['version']
+    end = time.time()
+    resp_object['timeSeconds'] = end - start
 
-    for resource in resp['rest'][0]['resource']:
+    return resp_object
 
-        if resource["type"] in mii_relevant_resources:
-            capabilityStatement['searchParams'].append(resource)
+
+def execute_status_queries(status_queries):
+
+    for query in status_queries:
+        resp = execute_query(query['query'])
+        
+        if resp['status'] != "failed":
+            query['status'] = resp['status']
+            query['timeSeconds'] = resp['timeSeconds']
+            query['response'] = resp['json']['total']
+        
+def execute_capability_statement(capabilityStatement):
+    
+    resp = execute_query('/metadata')
+
+    if resp['status'] != "failed":
+
+        capabilityStatement['software']['name'] = resp['json']['software']['name']
+        capabilityStatement['software']['version'] = resp['json']['software']['version']
+
+        for resource in resp['json']['rest'][0]['resource']:
+
+            if resource["type"] in mii_relevant_resources:
+                capabilityStatement['searchParams'].append(resource)
 
 
 with open('report-queries.json') as json_file:
