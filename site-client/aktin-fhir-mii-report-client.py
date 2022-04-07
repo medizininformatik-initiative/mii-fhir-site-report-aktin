@@ -3,6 +3,7 @@ import json
 import argparse
 from datetime import datetime
 from requests.auth import HTTPBasicAuth
+from json.decoder import JSONDecodeError
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--fhirurl', help='base url of your local fhir server', default="http://localhost:8081/fhir")
@@ -34,11 +35,23 @@ with open('report-queries.json') as json_file:
     queries = report["queries"]
     for query in queries:
         if fhir_token is not None:
-            resp = requests.get(f'{fhir_base_url}{query["query"]}', headers={'Authorization': f"Bearer {fhir_token}"}, proxies=proxies).json()
+            resp = requests.get(f'{fhir_base_url}{query["query"]}', headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'}, proxies=proxies)
         else:
-            resp = requests.get(f'{fhir_base_url}{query["query"]}', auth=HTTPBasicAuth(
-                fhir_user, fhir_pw), proxies=proxies).json()
-        query['response'] = resp['total']
+            resp = requests.get(f'{fhir_base_url}{query["query"]}', headers={"Prefer": 'handling=strict'}, auth=HTTPBasicAuth(
+                fhir_user, fhir_pw), proxies=proxies)
+
+        query['status'] = "success"
+
+        if resp.status_code != 200:
+            query['status'] = "failed"
+
+        try:
+            resp = resp.json()
+        except JSONDecodeError:
+            query['status'] = "failed"
+
+        if query['status'] != "failed":
+            query['response'] = resp['total']
 
 headers = {'Authorization': f"Bearer {aktin_broker_api_key}"}
 resp = requests.put(aktin_broker_node_url,
