@@ -1,6 +1,7 @@
 import requests
 import json
 # import os
+import time
 import argparse
 from datetime import datetime
 from requests.auth import HTTPBasicAuth
@@ -28,9 +29,9 @@ https_proxy_aktin = args["httpsproxyaktin"]
 http_proxy_fhir = args["httpproxyfhir"]
 https_proxy_fhir = args["httpsproxyfhir"]
 
-mii_relevant_reources = ['Patient', 'Encounter' 'Observation', 'Procedure', 'Consent',
-                         'Medication', 'MedicationStatement', 'MedicationAdministration', 'Condition',
-                         'Specimen', 'DiagnosticReport', 'ResearchSubject', 'ServiceRequest']
+mii_relevant_resources = ['Patient', 'Encounter' 'Observation', 'Procedure', 'Consent',
+                          'Medication', 'MedicationStatement', 'MedicationAdministration', 'Condition',
+                          'Specimen', 'DiagnosticReport', 'ResearchSubject', 'ServiceRequest']
 
 proxies_fhir = {
     "http": http_proxy_fhir,
@@ -47,6 +48,7 @@ aktin_broker_node_url = f'{aktin_broker_url}my/node/miireport'
 def execute_status_queries(queries):
 
     for query in queries:
+        start = time.time()
         if fhir_token is not None:
             resp = requests.get(f'{fhir_base_url}{query["query"]}', headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'},
                                 proxies=proxies_fhir)
@@ -66,6 +68,9 @@ def execute_status_queries(queries):
 
         if query['status'] != "failed":
             query['response'] = resp['total']
+
+        end = time.time()
+        query['timeSeconds'] = end - start
 
 def execute_capability_statement(capabilityStatement):
     if fhir_token is not None:
@@ -88,7 +93,7 @@ def execute_capability_statement(capabilityStatement):
 
     for resource in resp['rest'][0]['resource']:
 
-        if resource["type"] in mii_relevant_reources:
+        if resource["type"] in mii_relevant_resources:
             capabilityStatement['searchParams'].append(resource)
 
 
