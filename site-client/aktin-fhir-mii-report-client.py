@@ -55,7 +55,6 @@ def execute_query(query):
             fhir_user, fhir_pw), proxies=proxies_fhir)
 
     resp_object = {}
-
     resp_object['status'] = "success"
 
     if resp.status_code != 200:
