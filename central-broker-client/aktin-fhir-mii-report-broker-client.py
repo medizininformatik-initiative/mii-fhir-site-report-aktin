@@ -40,7 +40,7 @@ for node in nodes:
     if resp.status_code == 200:
         report_json = resp.json()
         report = json.loads(report_json)
-        report['site-name'] = node_name
+        report['siteName'] = node["node_name"]
 
         with open(out_file_name, 'w', encoding='utf-8') as out_file:
             out_file.write(json.dumps(report))

@@ -1,7 +1,11 @@
 {
-  "site-name": "my-site-name",
+  "siteName": "my-site-name",
   "datetime": "",
-  "queries":[
+  "capabilityStatement": {
+    "software": {},
+    "searchParams": []
+  },
+  "statusQueries":[
     {
       "name": "sum-consent-mii",
       "query": "/Consent?_profile=http://fhir.de/ConsentManagement/StructureDefinition/Consent&_summary=count"

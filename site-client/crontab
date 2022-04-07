@@ -1,1 +1,1 @@
-*/30 * * * * /usr/local/bin/docker-compose -f /opt/miireport/docker-compose-yml up > /dev/null
+0 0 * * * /usr/local/bin/docker-compose -f /opt/miireport/docker-compose-yml up > /dev/null
