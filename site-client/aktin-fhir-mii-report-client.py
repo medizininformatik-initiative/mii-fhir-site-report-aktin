@@ -38,7 +38,7 @@ with open('report-queries.json') as json_file:
             resp = requests.get(f'{fhir_base_url}{query["query"]}', headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'})
         else:
             resp = requests.get(f'{fhir_base_url}{query["query"]}', headers={"Prefer": 'handling=strict'}, auth=HTTPBasicAuth(
-                fhir_user, fhir_pw), proxies=proxies)
+                fhir_user, fhir_pw))
 
         query['status'] = "success"
 
