@@ -35,7 +35,7 @@ with open('report-queries.json') as json_file:
     queries = report["queries"]
     for query in queries:
         if fhir_token is not None:
-            resp = requests.get(f'{fhir_base_url}{query["query"]}', headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'}, proxies=proxies)
+            resp = requests.get(f'{fhir_base_url}{query["query"]}', headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'})
         else:
             resp = requests.get(f'{fhir_base_url}{query["query"]}', headers={"Prefer": 'handling=strict'}, auth=HTTPBasicAuth(
                 fhir_user, fhir_pw), proxies=proxies)
@@ -53,6 +53,7 @@ with open('report-queries.json') as json_file:
         if query['status'] != "failed":
             query['response'] = resp['total']
 
+
 headers = {'Authorization': f"Bearer {aktin_broker_api_key}"}
 resp = requests.put(aktin_broker_node_url,
-                    json=json.dumps(report), headers=headers)
+                    json=json.dumps(report), headers=headers, proxies=proxies)
