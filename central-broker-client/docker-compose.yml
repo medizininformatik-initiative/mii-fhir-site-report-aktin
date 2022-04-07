@@ -6,4 +6,3 @@ services:
             - CLIENT_AUTH_PARAM=${MII_REPORT_CLIENT_AUTH_PARAM}
         volumes:
             - ./reports:/opt/reportclient/reports
-        #entrypoint: bash -c "tail -f /dev/null"
