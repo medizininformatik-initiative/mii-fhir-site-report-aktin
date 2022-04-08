@@ -48,15 +48,15 @@
     },
     {
       "name": "sum-vitalstatus-mii",
-      "query": "/Patient?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus&_summary=count"
+      "query": "/Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus&_summary=count"
     },
     {
       "name": "sum-vitalstatus-mii-version1",
-      "query": "/Patient?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus|1&_summary=count"
+      "query": "/Observation?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus|1&_summary=count"
     },
     {
       "name": "sum-vitalstatus-mii-version2",
-      "query": "/Patient?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus|2&_summary=count"
+      "query": "/Observation?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus|2&_summary=count"
     },
     {
       "name": "sum-encounter-einrichtung-mii",
