@@ -36,15 +36,15 @@
     },
     {
       "name": "sum-researchsubject-mii",
-      "query": "/Patient?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject&_summary=count"
+      "query": "/ResearchSubject?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject&_summary=count"
     },
     {
       "name": "sum-researchsubject-mii-version1",
-      "query": "/Patient?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject|1&_summary=count"
+      "query": "/ResearchSubject?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject|1&_summary=count"
     },
     {
       "name": "sum-researchsubject-mii-version2",
-      "query": "/Patient?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject|2&_summary=count"
+      "query": "/ResearchSubject?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject|2&_summary=count"
     },
     {
       "name": "sum-vitalstatus-mii",
