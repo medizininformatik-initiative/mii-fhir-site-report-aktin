@@ -60,11 +60,15 @@
     },
     {
       "name": "sum-encounter-einrichtung-mii",
-      "query": "/Encounter?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung&type=einrichtungskontakt&_summary=count"
+      "query": "/Encounter?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung&type=http://fhir.de/CodeSystem/Kontaktebene|einrichtungskontakt&_summary=count"
+    },
+    {
+      "name": "sum-encounter-abteilung-mii",
+      "query": "/Encounter?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung&type=http://fhir.de/CodeSystem/Kontaktebene|abteilungskontakt&_summary=count"
     },
     {
       "name": "sum-encounter-versorgung-mii",
-      "query": "/Encounter?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung&type=versorgungsstellenkontakt&_summary=count"
+      "query": "/Encounter?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung&type=http://fhir.de/CodeSystem/Kontaktebene|versorgungsstellenkontakt&_summary=count"
     },
     {
       "name": "sum-condition-mii",
