@@ -20,7 +20,7 @@
     },
     {
       "name": "sum-medication-mii",
-      "query": "/MedicationAdministration?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication&_summary=count"
+      "query": "/Medication?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication&_summary=count"
     },
     {
       "name": "sum-patient-mii",
