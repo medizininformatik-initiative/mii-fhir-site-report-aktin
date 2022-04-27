@@ -6,6 +6,8 @@ import argparse
 from datetime import datetime
 from requests.auth import HTTPBasicAuth
 from json.decoder import JSONDecodeError
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--fhirurl', help='base url of your local fhir server', default="http://localhost:8081/fhir")
@@ -45,13 +47,35 @@ proxy_aktin = {
 aktin_broker_node_url = f'{aktin_broker_url}my/node/miireport'
 
 
+def query_successful(query_url, resp_links):
+
+    self_link = ""
+    for link in resp_links:
+        if link['relation'] == 'self':
+            self_link = link['url']
+
+    parsed_url = urlparse(query_url)
+    query_url_params = parse_qs(parsed_url.query)
+
+    parsed_url = urlparse(self_link)
+    self_link_params = parse_qs(parsed_url.query)
+
+    for param in query_url_params:
+        if param not in self_link_params:
+            return False
+
+    return True
+
 def execute_query(query):
     start = time.time()
+
+    query_url = f'{fhir_base_url}{query}'
+
     if fhir_token is not None:
-        resp = requests.get(f'{fhir_base_url}{query}', headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'},
+        resp = requests.get(query_url, headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'},
                             proxies=proxies_fhir)
     else:
-        resp = requests.get(f'{fhir_base_url}{query}', headers={"Prefer": 'handling=strict'}, auth=HTTPBasicAuth(
+        resp = requests.get(query_url, headers={"Prefer": 'handling=strict'}, auth=HTTPBasicAuth(
             fhir_user, fhir_pw), proxies=proxies_fhir)
 
     resp_object = {}
@@ -62,6 +86,9 @@ def execute_query(query):
 
     try:
         resp_object['json'] = resp.json()
+
+        if 'link' in resp_object['json'].keys() and not query_successful(query_url, resp_object['json']['link']):
+            resp_object['status'] = "failed"
     except JSONDecodeError:
         resp_object['status'] = "failed"
 
@@ -75,14 +102,14 @@ def execute_status_queries(status_queries):
 
     for query in status_queries:
         resp = execute_query(query['query'])
-        
+        query['status'] = resp['status']
+
         if resp['status'] != "failed":
-            query['status'] = resp['status']
             query['timeSeconds'] = resp['timeSeconds']
             query['response'] = resp['json']['total']
-        
+
 def execute_capability_statement(capabilityStatement):
-    
+
     resp = execute_query('/metadata')
 
     if resp['status'] != "failed":
