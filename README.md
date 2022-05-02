@@ -11,13 +11,15 @@ and sends the finished report to the configured central AKTIN broker.
 
 The client comes packaged in a docker image and can be configured via environment variables.
 
-1. Set the enviroment variables in your .env file according to your requirements (explanation see "Overview Configuration Variables" below)
+1. Checkout the version you would like to install by checking out the respective git tag `git checkout tags/<tag-here - e.g. v0.3.0>`
 
-2. Start the process by executing `docker-compose up`
+2. Set the enviroment variables in your .env file according to your requirements (explanation see "Overview Configuration Variables" below)
 
-3. Check with the central team administering the central AKTIN broker if your report was successfully submitted
+3. Start the process by executing `docker-compose up`
 
-4. Create a cronjob similar to the `crontab` file in this repository to run the program periodically
+4. Check with the central team administering the central AKTIN broker if your report was successfully submitted
+
+5. Create a cronjob similar to the `crontab` file in this repository to run the program periodically
 
 Note: If you are using the standard installation of the feasibility triangle from here: https://github.com/medizininformatik-initiative/feasibility-deploy, please ensure that you start the container here as part of the correct docker-compose project (e.g. COMPOSE_PROJECT=mii-deploy).
 Example: `docker-compose -p $COMPONSE_PROJECT up`. the -p option then also has to be carried over to your crontab configuration.
