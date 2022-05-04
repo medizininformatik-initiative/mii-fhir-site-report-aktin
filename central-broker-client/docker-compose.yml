@@ -1,6 +1,6 @@
 services:
     mii-aktin-central-report-client:
-        image: ghcr.io/medizininformatik-initiative/mii-site-report-central-broker-client:0.3.0
+        image: ghcr.io/medizininformatik-initiative/mii-site-report-central-broker-client:0.4.0
         environment:
             - BROKER_ENDPOINT_URI=${MII_REPORT_BROKER_ENDPOINT_URI}
             - CLIENT_AUTH_PARAM=${MII_REPORT_CLIENT_AUTH_PARAM}
