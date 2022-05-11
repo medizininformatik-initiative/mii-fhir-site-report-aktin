@@ -35,6 +35,10 @@
       "query": "/Patient?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient|2&_summary=count"
     },
     {
+      "name": "sum-patient-pseudonymisiert-mii-version2",
+      "query": "/Patient?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/PatientPseudonymisiert|2&_summary=count"
+    },
+    {
       "name": "sum-researchsubject-mii",
       "query": "/ResearchSubject?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject&_summary=count"
     },
