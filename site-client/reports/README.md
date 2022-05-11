@@ -1,0 +1,1 @@
+This folder is mounted to the aktin status report client docker container to allow the client to write the created reports to a file before submitting it to the central broker.

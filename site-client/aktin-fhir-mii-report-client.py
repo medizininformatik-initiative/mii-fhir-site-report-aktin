@@ -116,6 +116,7 @@ def execute_capability_statement(capabilityStatement):
 
         capabilityStatement['software']['name'] = resp['json']['software']['name']
         capabilityStatement['software']['version'] = resp['json']['software']['version']
+        capabilityStatement['instantiates'] = resp['json'].get('instantiates', [])
 
         for resource in resp['json']['rest'][0]['resource']:
 
@@ -129,6 +130,9 @@ with open('report-queries.json') as json_file:
     execute_status_queries(report["statusQueries"])
     execute_capability_statement(report['capabilityStatement'])
 
+
+with open(f'reports/site-report-{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.json', 'w') as output_file:
+    output_file.write(json.dumps(report))
 
 headers = {'Authorization': f"Bearer {aktin_broker_api_key}"}
 resp = requests.put(aktin_broker_node_url,

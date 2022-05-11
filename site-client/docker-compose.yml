@@ -13,3 +13,4 @@ services:
             - CLIENT_AUTH_PARAM=${MII_REPORT_CLIENT_AUTH_PARAM}
         volumes:
             - ./report-queries.json:/opt/reportclient/report-queries.json
+            - ./reports:/opt/reportclient/reports
