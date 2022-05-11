@@ -1,6 +1,6 @@
 services:
     mii-aktin-report-client:
-        image: ghcr.io/medizininformatik-initiative/mii-site-report-site-client:0.4.0
+        image: ghcr.io/medizininformatik-initiative/mii-site-report-site-client:0.4.1
         environment:
             - FHIR_BASE_URL=${MII_REPORT_CLIENT_FHIR_BASE_URL}
             - FHIR_USER=${MII_REPORT_CLIENT_FHIR_USER}
