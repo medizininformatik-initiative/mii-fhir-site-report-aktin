@@ -59,6 +59,10 @@
       "query": "/Observation?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus|2&_summary=count"
     },
     {
+      "name": "sum-todesursache-mii-version2",
+      "query": "/Observation?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache|2&_summary=count"
+    },
+    {
       "name": "sum-encounter-einrichtung-mii",
       "query": "/Encounter?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung&type=http://fhir.de/CodeSystem/Kontaktebene|einrichtungskontakt&_summary=count"
     },
