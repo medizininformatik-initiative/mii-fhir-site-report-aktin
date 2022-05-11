@@ -35,8 +35,8 @@
       "query": "/Patient?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient|2&_summary=count"
     },
     {
-      "name": "sum-patient-pseudonymisiert-mii-version2",
-      "query": "/Patient?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/PatientPseudonymisiert|2&_summary=count"
+      "name": "sum-patient-pseudonymisiert-mii",
+      "query": "/Patient?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/PatientPseudonymisiert&_summary=count"
     },
     {
       "name": "sum-researchsubject-mii",
@@ -63,8 +63,8 @@
       "query": "/Observation?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus|2&_summary=count"
     },
     {
-      "name": "sum-todesursache-mii-version2",
-      "query": "/Observation?_profile:below=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache|2&_summary=count"
+      "name": "sum-todesursache-mii",
+      "query": "/Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache&_summary=count"
     },
     {
       "name": "sum-encounter-einrichtung-mii",
