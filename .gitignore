@@ -1,3 +1,4 @@
 central-broker-client/reports/*
 !reports/README.md
 test-capability.py
+site-client/reports/*.json
