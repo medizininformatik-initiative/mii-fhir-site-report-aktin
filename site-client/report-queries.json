@@ -96,7 +96,7 @@
     },
     {
       "name": "sum-servicerequest-mii",
-      "query": "/Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab&_summary=count"
+      "query": "/ServiceRequest?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab&_summary=count"
     },
     {
       "name": "sum-consent-all",
