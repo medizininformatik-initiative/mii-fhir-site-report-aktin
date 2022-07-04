@@ -7,10 +7,6 @@
   },
   "statusQueries":[
     {
-      "name": "sum-consent-mii",
-      "query": "/Consent?_profile=http://fhir.de/ConsentManagement/StructureDefinition/Consent&_summary=count"
-    },
-    {
       "name": "sum-medication-statement-mii",
       "query": "/MedicationStatement?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement&_summary=count"
     },
@@ -101,6 +97,14 @@
     {
       "name": "sum-consent-all",
       "query": "/Consent?_summary=count"
+    },
+    {
+      "name": "sum-consent-hl7de",
+      "query": "/Consent?_profile=http://fhir.de/ConsentManagement/StructureDefinition/Consent&_summary=count"
+    },
+    {
+      "name": "sum-consent-mii",
+      "query": "/Consent?_profile=https://www.medizininformatik-initiative.de/fhir/ext/modul-consent/StructureDefinition/Consent&_summary=count"
     },
     {
       "name": "sum-medication-statement-all",
