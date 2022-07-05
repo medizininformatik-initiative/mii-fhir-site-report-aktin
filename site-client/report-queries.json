@@ -149,6 +149,14 @@
     {
       "name": "sum-researchsubject-all",
       "query": "/ResearchSubject?_summary=count"
+    },
+    {
+      "name": "sum-specimen-all",
+      "query": "/Specimen?_summary=count"
+    },
+    {
+      "name": "sum-specimen-mii-biobank",
+      "query": "/Specimen?_profile=https://www.medizininformatik-initiative.de/fhir/ext/modul-biobank/StructureDefinition/Specimen&_summary=count"
     }
   ]
 }
