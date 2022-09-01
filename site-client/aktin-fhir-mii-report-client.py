@@ -31,7 +31,7 @@ https_proxy_aktin = args["httpsproxyaktin"]
 http_proxy_fhir = args["httpproxyfhir"]
 https_proxy_fhir = args["httpsproxyfhir"]
 
-mii_relevant_resources = ['Patient', 'Encounter' 'Observation', 'Procedure', 'Consent',
+mii_relevant_resources = ['Patient', 'Encounter', 'Observation', 'Procedure', 'Consent',
                           'Medication', 'MedicationStatement', 'MedicationAdministration', 'Condition',
                           'Specimen', 'DiagnosticReport', 'ResearchSubject', 'ServiceRequest']
 
