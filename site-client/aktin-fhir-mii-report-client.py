@@ -163,8 +163,8 @@ def execute_pat_year_queries():
         resp = execute_query(query)
         resp_json = resp['json']
         pat_ids = page_through_results_and_collect(resp_json, pat_ids)
-        cur_year = cur_year + 1
         pats_by_year[str(cur_year)] = len(pat_ids)
+        cur_year = cur_year + 1
 
     return pats_by_year
 
