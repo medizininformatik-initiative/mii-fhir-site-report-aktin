@@ -157,6 +157,30 @@
     {
       "name": "sum-specimen-mii-biobank",
       "query": "/Specimen?_profile=https://www.medizininformatik-initiative.de/fhir/ext/modul-biobank/StructureDefinition/Specimen&_summary=count"
+    },
+    {
+      "name": "sum-condition-all-year",
+      "query": "/Condition?_summary=count",
+      "dateParam": "recorded-date",
+      "startYear": 2000
+    },
+    {
+      "name": "sum-encounter-all-year",
+      "query": "/Encounter?_summary=count",
+      "dateParam": "date",
+      "startYear": 2000
+    },
+    {
+      "name": "sum-specimen-all-year",
+      "query": "/Specimen?_summary=count",
+      "dateParam": "collected",
+      "startYear": 2000
+    },
+    {
+      "name": "sum-procedure-all-year",
+      "query": "/Procedure?_summary=count",
+      "dateParam": "date",
+      "startYear": 2000
     }
   ]
 }

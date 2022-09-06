@@ -3,7 +3,7 @@ import json
 # import os
 import time
 import argparse
-from datetime import datetime
+from datetime import datetime, date
 from requests.auth import HTTPBasicAuth
 from json.decoder import JSONDecodeError
 from urllib.parse import urlparse
@@ -98,15 +98,76 @@ def execute_query(query):
     return resp_object
 
 
+def execute_year_query(query):
+    cur_year = query['startYear']
+    last_year = date.today().year
+    query['responseByYear'] = {}
+
+    while cur_year < last_year:
+        year_query = f'{query["query"]}&{query["dateParam"]}=gt{str(cur_year)}&{query["dateParam"]}=lt{str(cur_year + 1)}'
+        resp = execute_query(year_query)
+        if resp['status'] != "failed":
+            query['responseByYear'][str(cur_year)] = resp['json']['total']
+        cur_year = cur_year + 1
+
+    return query
+
+
 def execute_status_queries(status_queries):
 
     for query in status_queries:
-        resp = execute_query(query['query'])
-        query['status'] = resp['status']
 
-        if resp['status'] != "failed":
-            query['timeSeconds'] = resp['timeSeconds']
-            query['response'] = resp['json']['total']
+        if 'startYear' in query:
+            execute_year_query(query)
+        else:
+            resp = execute_query(query['query'])
+            query['status'] = resp['status']
+
+            if resp['status'] != "failed":
+                query['timeSeconds'] = resp['timeSeconds']
+                query['response'] = resp['json']['total']
+
+def get_next_link(link_elem):
+    for elem in link_elem:
+        if elem['relation'] == 'next':
+            return elem['url']
+
+    return None
+
+def page_through_results_and_collect(resp_json, pat_ids):
+
+    if 'entry' not in resp_json:
+        return pat_ids
+
+    next_link = get_next_link(resp_json['link'])
+    result_list = list(map(lambda entry: entry['resource']['subject']['reference'].split('/')[1], resp_json['entry']))
+    pat_ids.update(result_list)
+
+    while next_link:
+        resp = requests.get(next_link)
+        result_list_temp = list(map(lambda entry: entry['resource']['subject']['reference'].split('/')[1], resp.json()['entry']))
+        next_link = get_next_link(resp.json()['link'])
+        pat_ids.update(result_list_temp)
+
+    return pat_ids
+
+def execute_pat_year_queries():
+
+    cur_year = 2000
+    last_year = date.today().year
+    pats_by_year = {}
+
+    while cur_year < last_year:
+        pat_ids = set()
+        query = f'/Encounter?date=gt{str(cur_year)}&date=lt{str(cur_year + 1)}'
+        resp = execute_query(query)
+        resp_json = resp['json']
+        pat_ids = page_through_results_and_collect(resp_json, pat_ids)
+        cur_year = cur_year + 1
+        pats_by_year[str(cur_year)] = len(pat_ids)
+
+    return pats_by_year
+
 
 def execute_capability_statement(capabilityStatement):
 
@@ -128,6 +189,8 @@ with open('report-queries.json') as json_file:
     report = json.load(json_file)
     report['datetime'] = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     execute_status_queries(report["statusQueries"])
+    pats_by_year = execute_pat_year_queries()
+    report['nPatientsByYear'] = pats_by_year
     execute_capability_statement(report['capabilityStatement'])
 
 
