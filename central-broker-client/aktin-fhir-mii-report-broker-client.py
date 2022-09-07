@@ -37,10 +37,13 @@ for node in nodes:
     headers = {'Authorization': f"Bearer {aktin_broker_api_key}"}
     resp = requests.get(aktin_broker_node_report_url, headers=headers)
 
-    if resp.status_code == 200:
-        report_json = resp.json()
-        report = json.loads(report_json)
-        report['siteName'] = node["node_name"]
+    try:
+        if resp.status_code == 200:
+            report_json = resp.json()
+            report = json.loads(report_json)
+            report['siteName'] = node["node_name"]
 
-        with open(out_file_name, 'w', encoding='utf-8') as out_file:
-            out_file.write(json.dumps(report))
+            with open(out_file_name, 'w', encoding='utf-8') as out_file:
+                out_file.write(json.dumps(report))
+    except TypeError:
+        print(f'Site {node["node_name"]} report not correct')
