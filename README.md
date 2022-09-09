@@ -13,7 +13,7 @@ The client comes packaged in a docker image and can be configured via environmen
 
 1. Checkout the version you would like to install by checking out the respective git tag `git checkout tags/<tag-here - e.g. v0.3.0>`
 
-2. Initialise the .env file. If it already exists compare .env file to .env.default file and add any new var from .env.default to the .env file
+2. Initialise the .env file by executing the `initialise-env-file.sh`. If it already exists compare .env file to .env.default file and add any new vars from .env.default to the .env file
 
 2. Set the enviroment variables in your .env file according to your requirements (explanation see "Overview Configuration Variables" below)
 
