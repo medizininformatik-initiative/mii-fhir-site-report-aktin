@@ -30,7 +30,7 @@ The client comes packaged in a docker image and can be configured via environmen
 8. Create a cronjob similar to the `crontab` file in this repository to run the program periodically
 
 Note: If you are using the standard installation of the feasibility triangle from here: https://github.com/medizininformatik-initiative/feasibility-deploy, please ensure that you start the container here as part of the correct docker-compose project (e.g. COMPOSE_PROJECT=feasibility-deploy). In this case MII_REPORT_CLIENT_FHIR_BASE_URL should match the set docker BASE_URL (default: http://fhir-server:8080/fhir).
-Example: `docker-compose -p $COMPONSE_PROJECT up`. the -p option then also has to be carried over to your crontab configuration.
+Example: `docker-compose -p $COMPOSE_PROJECT up`. the -p option then also has to be carried over to your crontab configuration.
 
 
 ## Overview Configuration Variables
