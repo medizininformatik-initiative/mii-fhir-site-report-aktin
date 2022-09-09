@@ -159,9 +159,27 @@
       "query": "/Specimen?_profile=https://www.medizininformatik-initiative.de/fhir/ext/modul-biobank/StructureDefinition/Specimen&_summary=count"
     },
     {
-      "name": "sum-condition-all-year",
-      "query": "/Condition?_summary=count",
-      "dateParam": "recorded-date",
+      "name": "sum-medication-statement-mii-year",
+      "query": "/MedicationStatement?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement&_summary=count",
+      "dateParam": "effective",
+      "startYear": 2000
+    },
+    {
+      "name": "sum-medication-administration-mii-year",
+      "query": "/MedicationAdministration?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration&_summary=count",
+      "dateParam": "effective-time",
+      "startYear": 2000
+    },
+    {
+      "name": "sum-vitalstatus-mii-year",
+      "query": "/Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus&_summary=count",
+      "dateParam": "date",
+      "startYear": 2000
+    },
+    {
+      "name": "sum-todesursache-mii-year",
+      "query": "/Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache&_summary=count",
+      "dateParam": "date",
       "startYear": 2000
     },
     {
@@ -171,15 +189,39 @@
       "startYear": 2000
     },
     {
-      "name": "sum-specimen-all-year",
-      "query": "/Specimen?_summary=count",
-      "dateParam": "collected",
+      "name": "sum-condition-mii-year",
+      "query": "/Condition?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose&_summary=count",
+      "dateParam": "recorded-date",
       "startYear": 2000
     },
     {
-      "name": "sum-procedure-all-year",
-      "query": "/Procedure?_summary=count",
+      "name": "sum-procedure-mii-year",
+      "query": "/Procedure?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure&_summary=count",
       "dateParam": "date",
+      "startYear": 2000
+    },
+    {
+      "name": "sum-diagnosticreport-mii-year",
+      "query": "/DiagnosticReport?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/DiagnosticReportLab&_summary=count",
+      "dateParam": "date",
+      "startYear": 2000
+    },
+    {
+      "name": "sum-observation-mii-year",
+      "query": "/Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab&_summary=count",
+      "dateParam": "date",
+      "startYear": 2000
+    },
+    {
+      "name": "sum-servicerequest-mii-year",
+      "query": "/ServiceRequest?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ServiceRequestLab&_summary=count",
+      "dateParam": "authored",
+      "startYear": 2000
+    },
+    {
+      "name": "sum-specimen-mii-year",
+      "query": "/Specimen?_profile=https://www.medizininformatik-initiative.de/fhir/ext/modul-biobank/StructureDefinition/Specimen&_summary=count",
+      "dateParam": "collected",
       "startYear": 2000
     }
   ]
