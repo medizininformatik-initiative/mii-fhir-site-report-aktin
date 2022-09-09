@@ -1,10 +1,10 @@
 FROM python:3.9
 
-COPY . /opt/reportclient
 RUN pip install requests==2.22.0
+RUN pip install pandas==1.4.4
 RUN useradd -r -s /bin/false 10001
+COPY . /opt/reportclient
 RUN chown -R 10001:10001 /opt/reportclient
-
 WORKDIR /opt/reportclient
 
 COPY docker-entrypoint.sh /usr/local/bin/

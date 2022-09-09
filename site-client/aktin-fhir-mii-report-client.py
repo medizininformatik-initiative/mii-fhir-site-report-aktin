@@ -8,17 +8,29 @@ from requests.auth import HTTPBasicAuth
 from json.decoder import JSONDecodeError
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
+import pandas as pd
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--fhirurl', help='base url of your local fhir server', default="http://localhost:8081/fhir")
-parser.add_argument('--fhiruser', help='basic auth user fhir server', nargs="?", default="")
-parser.add_argument('--fhirpw', help='basic auth pw fhir server', nargs="?", default="")
-parser.add_argument('--fhirtoken', help='token auth fhir server', nargs="?", default=None)
-parser.add_argument('--brokerurl', help='base url of the central aktin broker', default="http://localhost:8082/broker/")
+parser.add_argument('--fhirurl', help='base url of your local fhir server',
+                    default="http://localhost:8081/fhir")
+parser.add_argument(
+    '--fhiruser', help='basic auth user fhir server', nargs="?", default="")
+parser.add_argument(
+    '--fhirpw', help='basic auth pw fhir server', nargs="?", default="")
+parser.add_argument(
+    '--fhirtoken', help='token auth fhir server', nargs="?", default=None)
+parser.add_argument('--brokerurl', help='base url of the central aktin broker',
+                    default="http://localhost:8082/broker/")
 parser.add_argument('--apikey', help='your api key', default="xxxApiKey123")
-parser.add_argument('--httpsproxyaktin', help='your https proxy url for your aktin connection - None if not set here', nargs="?", default=None)
-parser.add_argument('--httpproxyfhir', help='http proxy url for your fhir server - None if not set here', nargs="?", default=None)
-parser.add_argument('--httpsproxyfhir', help='https proxy url for your fhir server - None if not set here', nargs="?", default=None)
+parser.add_argument('--httpsproxyaktin',
+                    help='your https proxy url for your aktin connection - None if not set here', nargs="?", default=None)
+parser.add_argument(
+    '--httpproxyfhir', help='http proxy url for your fhir server - None if not set here', nargs="?", default=None)
+parser.add_argument('--httpsproxyfhir',
+                    help='https proxy url for your fhir server - None if not set here', nargs="?", default=None)
+parser.add_argument(
+    '--sendreport', help='https proxy url for your fhir server - None if not set here', action='store_true', default=False)
+
 args = vars(parser.parse_args())
 
 fhir_base_url = args["fhirurl"]
@@ -30,6 +42,7 @@ aktin_broker_api_key = args["apikey"]
 https_proxy_aktin = args["httpsproxyaktin"]
 http_proxy_fhir = args["httpproxyfhir"]
 https_proxy_fhir = args["httpsproxyfhir"]
+send_report = args["sendreport"]
 
 mii_relevant_resources = ['Patient', 'Encounter', 'Observation', 'Procedure', 'Consent',
                           'Medication', 'MedicationStatement', 'MedicationAdministration', 'Condition',
@@ -65,6 +78,13 @@ def query_successful(query_url, resp_links):
             return False
 
     return True
+
+
+def convert_report_to_csv(site_report, report_time):
+    df = pd.json_normalize(site_report['statusQueries'])
+    df = df.drop('dateParam', axis=1)
+    df = df.drop('startYear', axis=1)
+    df.to_csv(f'reports/site-report-{report_time}.csv')
 
 def execute_query(query):
     start = time.time()
@@ -127,6 +147,7 @@ def execute_status_queries(status_queries):
                 query['timeSeconds'] = resp['timeSeconds']
                 query['response'] = resp['json']['total']
 
+
 def get_next_link(link_elem):
     for elem in link_elem:
         if elem['relation'] == 'next':
@@ -134,22 +155,26 @@ def get_next_link(link_elem):
 
     return None
 
+
 def page_through_results_and_collect(resp_json, pat_ids):
 
     if 'entry' not in resp_json:
         return pat_ids
 
     next_link = get_next_link(resp_json['link'])
-    result_list = list(map(lambda entry: entry['resource']['subject']['reference'].split('/')[1], resp_json['entry']))
+    result_list = list(map(lambda entry: entry['resource']['subject']['reference'].split(
+        '/')[1], resp_json['entry']))
     pat_ids.update(result_list)
 
     while next_link:
         resp = requests.get(next_link)
-        result_list_temp = list(map(lambda entry: entry['resource']['subject']['reference'].split('/')[1], resp.json()['entry']))
+        result_list_temp = list(map(lambda entry: entry['resource']['subject']['reference'].split(
+            '/')[1], resp.json()['entry']))
         next_link = get_next_link(resp.json()['link'])
         pat_ids.update(result_list_temp)
 
     return pat_ids
+
 
 def execute_pat_year_queries():
 
@@ -177,7 +202,8 @@ def execute_capability_statement(capabilityStatement):
 
         capabilityStatement['software']['name'] = resp['json']['software']['name']
         capabilityStatement['software']['version'] = resp['json']['software']['version']
-        capabilityStatement['instantiates'] = resp['json'].get('instantiates', [])
+        capabilityStatement['instantiates'] = resp['json'].get(
+            'instantiates', [])
 
         for resource in resp['json']['rest'][0]['resource']:
 
@@ -194,9 +220,18 @@ with open('report-queries.json') as json_file:
     execute_capability_statement(report['capabilityStatement'])
 
 
-with open(f'reports/site-report-{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.json', 'w') as output_file:
+report_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+with open(f'reports/site-report-{report_time}.json', 'w') as output_file:
     output_file.write(json.dumps(report))
 
-headers = {'Authorization': f"Bearer {aktin_broker_api_key}"}
-resp = requests.put(aktin_broker_node_url,
-                    json=json.dumps(report), headers=headers, proxies=proxy_aktin)
+convert_report_to_csv(report, report_time)
+
+if send_report:
+    print(f'Sending report to central broker at: {aktin_broker_node_url}')
+    headers = {'Authorization': f"Bearer {aktin_broker_api_key}"}
+    resp = requests.put(aktin_broker_node_url,
+                        json=json.dumps(report), headers=headers, proxies=proxy_aktin)
+else:
+    print("Not sending report - Check your local report output and then set SEND_REPORT to true once you have verified your report")
+    print(f'Currently configured central broker url would be {aktin_broker_node_url}')
