@@ -167,7 +167,8 @@ def page_through_results_and_collect(resp_json, pat_ids):
     pat_ids.update(result_list)
 
     while next_link:
-        resp = requests.get(next_link)
+        resp = requests.get(next_link, headers={"Prefer": 'handling=strict'}, auth=HTTPBasicAuth(
+            fhir_user, fhir_pw), proxies=proxies_fhir)
         result_list_temp = list(map(lambda entry: entry['resource']['subject']['reference'].split(
             '/')[1], resp.json()['entry']))
         next_link = get_next_link(resp.json()['link'])
