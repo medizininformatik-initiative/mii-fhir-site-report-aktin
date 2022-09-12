@@ -190,7 +190,7 @@ def execute_pat_year_queries():
 
     while cur_year < last_year:
         pat_ids = set()
-        query = f'/Encounter?date=gt{str(cur_year)}&date=lt{str(cur_year + 1)}'
+        query = f'/Encounter?date=gt{str(cur_year)}&date=lt{str(cur_year + 1)}&_count=500'
         resp = execute_query(query)
         resp_json = resp['json']
         pat_ids = page_through_results_and_collect(resp_json, pat_ids)
