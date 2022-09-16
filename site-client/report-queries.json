@@ -60,7 +60,7 @@
     },
     {
       "name": "sum-todesursache-mii",
-      "query": "/Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache&_summary=count"
+      "query": "/Condition?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache&_summary=count"
     },
     {
       "name": "sum-encounter-einrichtung-mii",
@@ -178,7 +178,7 @@
     },
     {
       "name": "sum-todesursache-mii-year",
-      "query": "/Observation?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache&_summary=count",
+      "query": "/Condition?_profile=https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache&_summary=count",
       "dateParam": "date",
       "startYear": 2000
     },
