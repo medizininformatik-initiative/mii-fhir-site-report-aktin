@@ -188,7 +188,7 @@ def execute_pat_year_queries():
     last_year = date.today().year
     pats_by_year = {}
 
-    while cur_year < last_year:
+    while cur_year <= last_year:
         pat_ids = set()
         query = f'/Encounter?date=gt{str(cur_year)}&date=lt{str(cur_year + 1)}&_count=500'
         resp = execute_query(query)
