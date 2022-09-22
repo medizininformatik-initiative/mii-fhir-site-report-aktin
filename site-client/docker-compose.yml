@@ -12,6 +12,7 @@ services:
             - BROKER_ENDPOINT_URI=${MII_REPORT_BROKER_ENDPOINT_URI}
             - CLIENT_AUTH_PARAM=${MII_REPORT_CLIENT_AUTH_PARAM}
             - SEND_REPORT=${MII_REPORT_CLIENT_SEND_REPORT}
+            - OBFUSCATE_COUNT=${MII_REPORT_CLIENT_OBFUSCATE_COUNTS}
         volumes:
             - ./report-queries.json:/opt/reportclient/report-queries.json
             - ./reports:/opt/reportclient/reports

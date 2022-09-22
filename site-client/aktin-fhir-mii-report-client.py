@@ -23,13 +23,19 @@ parser.add_argument('--brokerurl', help='base url of the central aktin broker',
                     default="http://localhost:8082/broker/")
 parser.add_argument('--apikey', help='your api key', default="xxxApiKey123")
 parser.add_argument('--httpsproxyaktin',
-                    help='your https proxy url for your aktin connection - None if not set here', nargs="?", default=None)
+                    help='your https proxy url for your aktin connection - None if not set here', nargs="?",
+                    default=None)
 parser.add_argument(
     '--httpproxyfhir', help='http proxy url for your fhir server - None if not set here', nargs="?", default=None)
 parser.add_argument('--httpsproxyfhir',
                     help='https proxy url for your fhir server - None if not set here', nargs="?", default=None)
 parser.add_argument(
-    '--sendreport', help='https proxy url for your fhir server - None if not set here', action='store_true', default=False)
+    '--sendreport', help='https proxy url for your fhir server - None if not set here', action='store_true',
+    default=False)
+
+parser.add_argument(
+    '--obfuscate', help='activates obfuscation to round counts to the next multiple of 10 if the count is > 0',
+    action='store_true', default=False)
 
 args = vars(parser.parse_args())
 
@@ -43,6 +49,7 @@ https_proxy_aktin = args["httpsproxyaktin"]
 http_proxy_fhir = args["httpproxyfhir"]
 https_proxy_fhir = args["httpsproxyfhir"]
 send_report = args["sendreport"]
+obfuscate_count = args["obfuscate"]
 
 mii_relevant_resources = ['Patient', 'Encounter', 'Observation', 'Procedure', 'Consent',
                           'Medication', 'MedicationStatement', 'MedicationAdministration', 'Condition',
@@ -60,8 +67,15 @@ proxy_aktin = {
 aktin_broker_node_url = f'{aktin_broker_url}my/node/miireport'
 
 
-def query_successful(query_url, resp_links):
+def round_to_next_multiple_of(x: int, y: int):
+    return x - (x % -y)
 
+
+def obfuscate(count):
+    return round_to_next_multiple_of(int(count), 10) if obfuscate_count else count
+
+
+def query_successful(query_url, resp_links):
     self_link = ""
     for link in resp_links:
         if link['relation'] == 'self':
@@ -85,6 +99,7 @@ def convert_report_to_csv(site_report, report_time):
     df = df.drop('dateParam', axis=1)
     df = df.drop('startYear', axis=1)
     df.to_csv(f'reports/site-report-{report_time}.csv')
+
 
 def execute_query(query):
     start = time.time()
@@ -127,14 +142,13 @@ def execute_year_query(query):
         year_query = f'{query["query"]}&{query["dateParam"]}=gt{str(cur_year)}&{query["dateParam"]}=lt{str(cur_year + 1)}'
         resp = execute_query(year_query)
         if resp['status'] != "failed":
-            query['responseByYear'][str(cur_year)] = resp['json']['total']
+            query['responseByYear'][str(cur_year)] = obfuscate(resp['json']['total'])
         cur_year = cur_year + 1
 
     return query
 
 
 def execute_status_queries(status_queries):
-
     for query in status_queries:
 
         if 'startYear' in query:
@@ -145,7 +159,7 @@ def execute_status_queries(status_queries):
 
             if resp['status'] != "failed":
                 query['timeSeconds'] = resp['timeSeconds']
-                query['response'] = resp['json']['total']
+                query['response'] = obfuscate(resp['json']['total'])
 
 
 def get_next_link(link_elem):
@@ -157,7 +171,6 @@ def get_next_link(link_elem):
 
 
 def page_through_results_and_collect(resp_json, pat_ids):
-
     if 'entry' not in resp_json:
         return pat_ids
 
@@ -168,11 +181,12 @@ def page_through_results_and_collect(resp_json, pat_ids):
 
     while next_link:
         if fhir_token is not None:
-            resp = requests.get(next_link, headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'},
+            resp = requests.get(next_link,
+                                headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'},
                                 proxies=proxies_fhir)
         else:
             resp = requests.get(next_link, headers={"Prefer": 'handling=strict'}, auth=HTTPBasicAuth(
-                                fhir_user, fhir_pw), proxies=proxies_fhir)
+                fhir_user, fhir_pw), proxies=proxies_fhir)
 
         result_list_temp = list(map(lambda entry: entry['resource']['subject']['reference'].split(
             '/')[1], resp.json()['entry']))
@@ -183,7 +197,6 @@ def page_through_results_and_collect(resp_json, pat_ids):
 
 
 def execute_pat_year_queries():
-
     cur_year = 2000
     last_year = date.today().year
     pats_by_year = {}
@@ -194,14 +207,13 @@ def execute_pat_year_queries():
         resp = execute_query(query)
         resp_json = resp['json']
         pat_ids = page_through_results_and_collect(resp_json, pat_ids)
-        pats_by_year[str(cur_year)] = len(pat_ids)
+        pats_by_year[str(cur_year)] = obfuscate(len(pat_ids))
         cur_year = cur_year + 1
 
     return pats_by_year
 
 
 def execute_capability_statement(capabilityStatement):
-
     resp = execute_query('/metadata')
 
     if resp['status'] != "failed":
@@ -225,7 +237,6 @@ with open('report-queries.json') as json_file:
     report['nPatientsByYear'] = pats_by_year
     execute_capability_statement(report['capabilityStatement'])
 
-
 report_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 with open(f'reports/site-report-{report_time}.json', 'w') as output_file:
@@ -239,5 +250,6 @@ if send_report:
     resp = requests.put(aktin_broker_node_url,
                         json=json.dumps(report), headers=headers, proxies=proxy_aktin)
 else:
-    print("Not sending report - Check your local report output and then set SEND_REPORT to true once you have verified your report")
+    print(
+        "Not sending report - Check your local report output and then set SEND_REPORT to true once you have verified your report")
     print(f'Currently configured central broker url would be {aktin_broker_node_url}')
