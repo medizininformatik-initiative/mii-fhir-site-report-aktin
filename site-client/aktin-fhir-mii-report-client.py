@@ -91,12 +91,14 @@ def execute_query(query):
 
     query_url = f'{fhir_base_url}{query}'
 
+    print(f'executing status report query: {query_url}')
+
     if fhir_token is not None:
         resp = requests.get(query_url, headers={'Authorization': f"Bearer {fhir_token}", 'Prefer': 'handling=strict'},
-                            proxies=proxies_fhir)
+                            proxies=proxies_fhir, timeout=None)
     else:
         resp = requests.get(query_url, headers={"Prefer": 'handling=strict'}, auth=HTTPBasicAuth(
-            fhir_user, fhir_pw), proxies=proxies_fhir)
+            fhir_user, fhir_pw), proxies=proxies_fhir, timeout=None)
 
     resp_object = {}
     resp_object['status'] = "success"
@@ -124,7 +126,7 @@ def execute_year_query(query):
     query['responseByYear'] = {}
 
     while cur_year < last_year:
-        year_query = f'{query["query"]}&{query["dateParam"]}=gt{str(cur_year)}&{query["dateParam"]}=lt{str(cur_year + 1)}'
+        year_query = f'{query["query"]}&{query["dateParam"]}=ge{str(cur_year)}-01-01&{query["dateParam"]}=lt{str(cur_year + 1)}-01-01'
         resp = execute_query(year_query)
         if resp['status'] != "failed":
             query['responseByYear'][str(cur_year)] = resp['json']['total']
@@ -238,6 +240,8 @@ if send_report:
     headers = {'Authorization': f"Bearer {aktin_broker_api_key}"}
     resp = requests.put(aktin_broker_node_url,
                         json=json.dumps(report), headers=headers, proxies=proxy_aktin)
+    print(f'Response from aktin broker: {resp.status_code}{resp.text}')
+
 else:
     print("Not sending report - Check your local report output and then set SEND_REPORT to true once you have verified your report")
     print(f'Currently configured central broker url would be {aktin_broker_node_url}')

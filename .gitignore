@@ -4,3 +4,4 @@ test-capability.py
 site-client/reports/*.json
 site-client/reports/*.csv
 .env
+dev-call.sh
