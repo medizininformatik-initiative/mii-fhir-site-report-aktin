@@ -104,7 +104,7 @@
     },
     {
       "name": "sum-consent-mii",
-      "query": "/Consent?_profile=https://www.medizininformatik-initiative.de/fhir/ext/modul-consent/StructureDefinition/Consent&_summary=count"
+      "query": "/Consent?_profile=https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung&_summary=count"
     },
     {
       "name": "sum-medication-statement-all",

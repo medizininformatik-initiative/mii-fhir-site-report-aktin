@@ -30,6 +30,8 @@ parser.add_argument('--httpsproxyfhir',
                     help='https proxy url for your fhir server - None if not set here', nargs="?", default=None)
 parser.add_argument(
     '--sendreport', help='https proxy url for your fhir server - None if not set here', action='store_true', default=False)
+parser.add_argument(
+    '--patyearfacility', help='https proxy url for your fhir server - None if not set here', action='store_true', default=False)
 
 args = vars(parser.parse_args())
 
@@ -43,6 +45,7 @@ https_proxy_aktin = args["httpsproxyaktin"]
 http_proxy_fhir = args["httpproxyfhir"]
 https_proxy_fhir = args["httpsproxyfhir"]
 send_report = args["sendreport"]
+pat_year_with_facility = args["patyearfacility"]
 
 mii_relevant_resources = ['Patient', 'Encounter', 'Observation', 'Procedure', 'Consent',
                           'Medication', 'MedicationStatement', 'MedicationAdministration', 'Condition',
@@ -193,6 +196,10 @@ def execute_pat_year_queries():
     while cur_year <= last_year:
         pat_ids = set()
         query = f'/Encounter?date={str(cur_year)}&_count=500'
+
+        if pat_year_with_facility:
+            query = f'/Encounter?type=http://fhir.de/CodeSystem/Kontaktebene|einrichtungskontakt&date={str(cur_year)}&_count=500'
+        
         resp = execute_query(query)
         resp_json = resp['json']
         pat_ids = page_through_results_and_collect(resp_json, pat_ids)
