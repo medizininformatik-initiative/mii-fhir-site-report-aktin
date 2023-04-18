@@ -119,14 +119,14 @@ def execute_query(query):
 
     return resp_object
 
-
 def execute_year_query(query):
     cur_year = query['startYear']
     last_year = date.today().year
     query['responseByYear'] = {}
 
-    while cur_year < last_year:
-        year_query = f'{query["query"]}&{query["dateParam"]}=ge{str(cur_year)}-01-01&{query["dateParam"]}=lt{str(cur_year + 1)}-01-01'
+    while cur_year <= last_year:
+        parsed_url = urlparse(query['query'])
+        year_query = f'{parsed_url.path}?{query["dateParam"]}={str(cur_year)}&{parsed_url.query}'
         resp = execute_query(year_query)
         if resp['status'] != "failed":
             query['responseByYear'][str(cur_year)] = resp['json']['total']
@@ -192,7 +192,7 @@ def execute_pat_year_queries():
 
     while cur_year <= last_year:
         pat_ids = set()
-        query = f'/Encounter?date=gt{str(cur_year)}&date=lt{str(cur_year + 1)}&_count=500'
+        query = f'/Encounter?date={str(cur_year)}&_count=500'
         resp = execute_query(query)
         resp_json = resp['json']
         pat_ids = page_through_results_and_collect(resp_json, pat_ids)
