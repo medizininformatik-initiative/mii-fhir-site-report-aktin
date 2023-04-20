@@ -47,3 +47,4 @@ Example: `docker-compose -p $COMPOSE_PROJECT up`. the -p option then also has to
 |MII_REPORT_CLIENT_AUTH_PARAM| Client specific API key for central AKTIN broker|xxxApiKey123|
 |MII_REPORT_CLIENT_AKTIN_HTTPS_PROXY|HTTPS url for proxy if used for local connecting to central AKTIN broker server, e.g. (with user: https://user:password@proxyip:port, without user: https://proxyip:port)|None|
 |MII_REPORT_CLIENT_SEND_REPORT| configures if the report should be send to the central broker, set to false to generate the report locally first|false|
+|MII_REPORT_SEARCH_PAT_YEAR_FACILITY| configures if any encounter or only the facility encounter is used to calculate the patient count|false|

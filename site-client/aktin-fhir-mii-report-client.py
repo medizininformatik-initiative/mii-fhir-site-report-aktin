@@ -29,7 +29,9 @@ parser.add_argument(
 parser.add_argument('--httpsproxyfhir',
                     help='https proxy url for your fhir server - None if not set here', nargs="?", default=None)
 parser.add_argument(
-    '--sendreport', help='https proxy url for your fhir server - None if not set here', action='store_true', default=False)
+    '--sendreport', help='Boolean whether to send the report to the broker or not', action='store_true', default=False)
+parser.add_argument(
+    '--patyearfacility', help='Boolean whether or not to query only facility encounters for the yearly patient count', action='store_true', default=False)
 
 args = vars(parser.parse_args())
 
@@ -43,6 +45,7 @@ https_proxy_aktin = args["httpsproxyaktin"]
 http_proxy_fhir = args["httpproxyfhir"]
 https_proxy_fhir = args["httpsproxyfhir"]
 send_report = args["sendreport"]
+pat_year_with_facility = args["patyearfacility"]
 
 mii_relevant_resources = ['Patient', 'Encounter', 'Observation', 'Procedure', 'Consent',
                           'Medication', 'MedicationStatement', 'MedicationAdministration', 'Condition',
@@ -176,6 +179,9 @@ def page_through_results_and_collect(resp_json, pat_ids):
             resp = requests.get(next_link, headers={"Prefer": 'handling=strict'}, auth=HTTPBasicAuth(
                                 fhir_user, fhir_pw), proxies=proxies_fhir)
 
+        if 'entry' not in resp_json:
+            return pat_ids
+
         result_list_temp = list(map(lambda entry: entry['resource']['subject']['reference'].split(
             '/')[1], resp.json()['entry']))
         next_link = get_next_link(resp.json()['link'])
@@ -193,6 +199,10 @@ def execute_pat_year_queries():
     while cur_year <= last_year:
         pat_ids = set()
         query = f'/Encounter?date={str(cur_year)}&_count=500'
+
+        if pat_year_with_facility:
+            query = f'/Encounter?type=http://fhir.de/CodeSystem/Kontaktebene|einrichtungskontakt&date={str(cur_year)}&_count=500'
+        
         resp = execute_query(query)
         resp_json = resp['json']
         pat_ids = page_through_results_and_collect(resp_json, pat_ids)
