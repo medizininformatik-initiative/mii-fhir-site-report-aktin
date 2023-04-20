@@ -1,6 +1,6 @@
 services:
     mii-aktin-report-client:
-        image: ghcr.io/medizininformatik-initiative/mii-site-report-site-client:0.6.0
+        image: ghcr.io/medizininformatik-initiative/mii-site-report-site-client:0.7.0-RC1
         environment:
             - FHIR_BASE_URL=${MII_REPORT_CLIENT_FHIR_BASE_URL}
             - FHIR_USER=${MII_REPORT_CLIENT_FHIR_USER}
@@ -13,6 +13,8 @@ services:
             - CLIENT_AUTH_PARAM=${MII_REPORT_CLIENT_AUTH_PARAM}
             - SEND_REPORT=${MII_REPORT_CLIENT_SEND_REPORT}
             - SEARCH_PAT_YEAR_FACILITY=${MII_REPORT_SEARCH_PAT_YEAR_FACILITY}
+            - EXEC_YEAR_QUERIES=${MII_REPORT_EXEC_YEAR_QUERIES}
+            - EXEC_PAT_YEAR_QUERIES=${MII_REPORT_EXEC_PAT_YEAR_QUERIES}
         volumes:
             - ./report-queries.json:/opt/reportclient/report-queries.json
             - ./reports:/opt/reportclient/reports

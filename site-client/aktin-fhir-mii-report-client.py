@@ -32,6 +32,10 @@ parser.add_argument(
     '--sendreport', help='Boolean whether to send the report to the broker or not', action='store_true', default=False)
 parser.add_argument(
     '--patyearfacility', help='Boolean whether or not to query only facility encounters for the yearly patient count', action='store_true', default=False)
+parser.add_argument(
+    '--execyearqueries', help='Boolean whether or not to execute year queries', action='store_true', default=False)
+parser.add_argument(
+    '--execpatyearqueries', help='Boolean whether or not to execute year queries for patients', action='store_true', default=False)
 
 args = vars(parser.parse_args())
 
@@ -46,6 +50,8 @@ http_proxy_fhir = args["httpproxyfhir"]
 https_proxy_fhir = args["httpsproxyfhir"]
 send_report = args["sendreport"]
 pat_year_with_facility = args["patyearfacility"]
+exec_year_queries = args["execyearqueries"]
+exec_pat_year_queries = args["execpatyearqueries"]
 
 mii_relevant_resources = ['Patient', 'Encounter', 'Observation', 'Procedure', 'Consent',
                           'Medication', 'MedicationStatement', 'MedicationAdministration', 'Condition',
@@ -123,9 +129,13 @@ def execute_query(query):
     return resp_object
 
 def execute_year_query(query):
+
     cur_year = query['startYear']
     last_year = date.today().year
     query['responseByYear'] = {}
+
+    if not exec_year_queries:
+        return query
 
     while cur_year <= last_year:
         parsed_url = urlparse(query['query'])
@@ -233,7 +243,12 @@ with open('report-queries.json') as json_file:
     report = json.load(json_file)
     report['datetime'] = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     execute_status_queries(report["statusQueries"])
-    pats_by_year = execute_pat_year_queries()
+
+    if exec_pat_year_queries:
+        pats_by_year = execute_pat_year_queries()
+    else:
+        pats_by_year = []
+
     report['nPatientsByYear'] = pats_by_year
     execute_capability_statement(report['capabilityStatement'])
 
