@@ -1,5 +1,6 @@
 {
   "siteName": "my-site-name",
+  "version": "0.0.0",
   "datetime": "",
   "capabilityStatement": {
     "software": {},
