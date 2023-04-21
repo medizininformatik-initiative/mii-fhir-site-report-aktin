@@ -48,3 +48,5 @@ Example: `docker-compose -p $COMPOSE_PROJECT up`. the -p option then also has to
 |MII_REPORT_CLIENT_AKTIN_HTTPS_PROXY|HTTPS url for proxy if used for local connecting to central AKTIN broker server, e.g. (with user: https://user:password@proxyip:port, without user: https://proxyip:port)|None|
 |MII_REPORT_CLIENT_SEND_REPORT| configures if the report should be send to the central broker, set to false to generate the report locally first|false|
 |MII_REPORT_SEARCH_PAT_YEAR_FACILITY| configures if any encounter or only the facility encounter is used to calculate the patient count|false|
+|MII_REPORT_EXEC_YEAR_QUERIES| enables year queries, if disabled no year queries will be executed|false|
+|MII_REPORT_EXEC_PAT_YEAR_QUERIES| enables yearly patient count calculation, if disabled patient breakdown by year will be empty|false|
