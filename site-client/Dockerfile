@@ -1,5 +1,9 @@
 FROM python:3.9
 
+RUN apt install ca-certificates
+COPY ./*.crt /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+
 RUN pip install requests==2.22.0
 RUN pip install pandas==1.4.4
 RUN useradd -r -s /bin/false 10001
