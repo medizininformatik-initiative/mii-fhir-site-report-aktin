@@ -9,7 +9,7 @@ then
 PAT_YEAR_FACILITY="--patyearfacility"
 fi
 
-if [[ $EXEC_YEAR_QUERIES == "true" ]] || [[ $SEARCH_PAT_YEAR_FACILITY == "True" ]]
+if [[ $EXEC_YEAR_QUERIES == "true" ]] || [[ $EXEC_YEAR_QUERIES == "True" ]]
 then
 EXEC_YEAR_QUERIES_TOKEN="--execyearqueries"
 fi

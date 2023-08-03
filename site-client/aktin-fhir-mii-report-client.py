@@ -131,18 +131,30 @@ def execute_query(query):
 def execute_year_query(query):
 
     cur_year = query['startYear']
+    query['startYear'] = None
+    query['status'] = "success"
     last_year = date.today().year
-    query['responseByYear'] = {}
+    query['responseByYear'] = []
 
     if not exec_year_queries:
         return query
 
     while cur_year <= last_year:
+        year_query_resp = {
+            "year": cur_year,
+            "response": -1
+        }
         parsed_url = urlparse(query['query'])
         year_query = f'{parsed_url.path}?{query["dateParam"]}={str(cur_year)}&{parsed_url.query}'
         resp = execute_query(year_query)
         if resp['status'] != "failed":
-            query['responseByYear'][str(cur_year)] = resp['json']['total']
+            year_query_resp['status'] = 'success'
+            year_query_resp['response'] = resp['json']['total']
+        else:
+            query['status'] = "failed"
+            year_query_resp['status'] = 'failed'
+
+        query['responseByYear'].append(year_query_resp)
         cur_year = cur_year + 1
 
     return query
@@ -152,15 +164,16 @@ def execute_status_queries(status_queries):
 
     for query in status_queries:
 
-        if 'startYear' in query:
+        if 'year' == query['type']:
             execute_year_query(query)
         else:
             resp = execute_query(query['query'])
             query['status'] = resp['status']
 
             if resp['status'] != "failed":
-                query['timeSeconds'] = resp['timeSeconds']
                 query['response'] = resp['json']['total']
+            else:
+                query['response'] = -1
 
 
 def get_next_link(link_elem):
@@ -232,28 +245,30 @@ def execute_capability_statement(capabilityStatement):
         capabilityStatement['software']['version'] = resp['json']['software']['version']
         capabilityStatement['instantiates'] = resp['json'].get(
             'instantiates', [])
+        capabilityStatement['restResources'] = []
 
         for resource in resp['json']['rest'][0]['resource']:
 
             if resource["type"] in mii_relevant_resources:
-                capabilityStatement['searchParams'].append(resource)
+
+                rest_resource = {}
+                rest_resource['type'] = resource['type']
+                rest_resource['searchParam'] = resource['searchParam']
+                capabilityStatement['restResources'].append(rest_resource)
 
 
 with open('report-queries.json') as json_file:
     report = json.load(json_file)
-    report['datetime'] = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    report['datetime'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
     execute_status_queries(report["statusQueries"])
 
     if exec_pat_year_queries:
-        pats_by_year = execute_pat_year_queries()
-    else:
-        pats_by_year = []
-
-    report['nPatientsByYear'] = pats_by_year
+        report['nPatientsByYear'] = execute_pat_year_queries()
+    
     execute_capability_statement(report['capabilityStatement'])
 
 
-report_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+report_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
 with open(f'reports/site-report-{report_time}.json', 'w') as output_file:
     output_file.write(json.dumps(report))
